@@ -534,6 +534,7 @@
 				E82E22481E3A89A900C81060 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E82E22491E3A89A900C81060 /* Build configuration list for PBXNativeTarget "EugeneTests" */ = {
 			isa = XCConfigurationList;
@@ -542,6 +543,7 @@
 				E82E224B1E3A89A900C81060 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E82E224C1E3A89A900C81060 /* Build configuration list for PBXNativeTarget "EugeneUITests" */ = {
 			isa = XCConfigurationList;
@@ -550,6 +552,7 @@
 				E82E224E1E3A89A900C81060 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

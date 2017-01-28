@@ -19,9 +19,8 @@ class Person {
     
     var jsonRepresntation: [String: Any] {
         var rep: [String: Any] = [
-            "givenName" : name.givenName!,
-            "familyName" : name.familyName!,
-            "ID": ID,
+            "firstName" : name.givenName!,
+            "lastName" : name.familyName!,
             "company": company,
             //"picture" : UIImagePNGRepresentation(picture)!.base64EncodedString() ,
             "sharePicture": sharePicture,

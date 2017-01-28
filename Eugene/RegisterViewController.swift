@@ -17,12 +17,20 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
     @IBOutlet var passwordTextField: UITextField!
 
     @IBAction func registerTapped(_ sender: UIButton) {
+        //TOOD: figure how to do guard with less repetition
         guard let firstName = firstNameTextField.text,
-        let lastName = lastNameTextField.text,
-        let email = emailTextField.text,
-        let company = companyTextField.text,
-        let position = positionTextField.text,
-            let password = passwordTextField.text else {
+            let lastName = lastNameTextField.text,
+            let email = emailTextField.text,
+            let company = companyTextField.text,
+            let position = positionTextField.text,
+            let password = passwordTextField.text,
+            !firstName.isEmpty,
+            !lastName.isEmpty,
+            !email.isEmpty,
+            !company.isEmpty,
+            !position.isEmpty,
+            !password.isEmpty
+            else {
                 let ac = UIAlertController(title: "Register Failed", message: "Please ensure you have filled out all fields and try again.", preferredStyle: .alert)
                 let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel)
                 ac.addAction(dismissAction)
@@ -30,10 +38,28 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
                 return
         }
         
-        let user = Person(givenName: firstName, familyName: lastName, company: company, picture: UIImage(named: "ball")!, sharePicture: true, ID: 9665309, position: position, email: email)
-        register(user, withPassword: password)
-        
-    }
+        let user = Person(givenName: firstName, familyName: lastName, company: company, picture: nil, sharePicture: true, position: position, email: email)
+        //TODO: remove code duplicatin with the network failure and system error cases
+        register(user, withPassword: password) { (result) in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "eventList", sender: nil)
+                }
+            case .networkFailure(let response):
+                    let ac = UIAlertController(title: "Login Failed", message: "An unexpected network error occured. Please try again or register a new account. (Code: \(response.statusCode)", preferredStyle: .alert)
+                    let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel)
+                    ac.addAction(dismissAction)
+                    DispatchQueue.main.async {
+                        self.present(ac, animated: true)
+                        
+                    }
+            case .systemFailure(let error):
+                fatalError("A system error has occured: \(error.localizedDescription)")
+
+                }
+            }
+        }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,8 +72,8 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
         // Dispose of any resources that can be recreated.
     }
     
-    func register(_ user: Person, withPassword: String) {
-        return
+    func register(_ user: Person, withPassword password: String, completion: @escaping (RequestResult) -> ()) {
+        EugeneAPI.contactAPIFor(endPoint: .registerAccountEndpoint(user: user, password: password), completion: completion)
     }
 
     /*

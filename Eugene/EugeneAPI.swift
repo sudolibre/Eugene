@@ -114,6 +114,7 @@ internal final class EugeneAPI {
         request.httpMethod = requestType.rawValue
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.httpBody = json
+        print(jsonData)
 
         let task = session.dataTask(with: request) { (optionalData, optionalResponse, optionalError) in
             guard let response = optionalResponse,

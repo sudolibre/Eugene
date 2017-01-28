@@ -15,6 +15,18 @@ class EventListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
+        
+        //TODO: REMOVE ME AFTER Implementation
+        dataSource = EventListDataSource()
+        
+        
+        
+        
+        
+        
+        
         tableView.dataSource = dataSource
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -22,6 +34,14 @@ class EventListViewController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print("view appear")
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("anything")
     }
 
 
@@ -67,7 +87,9 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     
     override init() {
         super.init()
-        fetchlist()
+        //fetchlist()
+        let event = Event(name: "Crash course", date: Date(), location: "TIY", address: "MLK Somewhere", people: [])
+        events = Array(repeating: event , count: 50)
     }
     
     

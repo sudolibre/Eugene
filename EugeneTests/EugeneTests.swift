@@ -68,13 +68,13 @@ class EugeneTests: XCTestCase {
         let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
         let resultForLogin = EugeneAPI.urlFor(.loginEndpoint(email: "test@gmail.com", password: "password"))
         let resultForRegister = EugeneAPI.urlFor(.registerAccountEndpoint(user: person, password: "password"))
-        let resultForRequestResponse = EugeneAPI.urlFor(.requestResponseEndpoint(myID: person.ID, sourcePersonID: person2.ID, state: .accepted))
-        let resultForSendRequest = EugeneAPI.urlFor(.sendRequestEndpoint(myID: person.ID, personID: person2.ID))
-        let resultForPrivacy = EugeneAPI.urlFor(.privacyEndpoint(myID: person.ID, sharePicture: true))
-        let resultForCheckIn = EugeneAPI.urlFor(.checkInEndpoint(myID: person.ID, eventID: 8675309))
-        let resultForMyContacts = EugeneAPI.urlFor(.myContactsEndpoint(myID: person.ID))
+        let resultForRequestResponse = EugeneAPI.urlFor(.requestResponseEndpoint(myID: person.ID!, sourcePersonID: person2.ID!, state: .accepted))
+        let resultForSendRequest = EugeneAPI.urlFor(.sendRequestEndpoint(myID: person.ID!, personID: person2.ID!))
+        let resultForPrivacy = EugeneAPI.urlFor(.privacyEndpoint(myID: person.ID!, sharePicture: true))
+        let resultForCheckIn = EugeneAPI.urlFor(.checkInEndpoint(myID: person.ID!, eventID: 8675309))
+        let resultForMyContacts = EugeneAPI.urlFor(.myContactsEndpoint(myID: person.ID!))
         let resultForEventList = EugeneAPI.urlFor(.eventListEndpoint)
-        let resultForRequestList = EugeneAPI.urlFor(.requestListEndpoint(myID: person.ID))
+        let resultForRequestList = EugeneAPI.urlFor(.requestListEndpoint(myID: person.ID!))
         
         let expectedForMyContacts = URL(string: "https://eugene-tiy.herokuapp.com/mycontacts")
         let expectedForEventList = URL(string: "https://eugene-tiy.herokuapp.com/eventlist")
@@ -99,7 +99,7 @@ class EugeneTests: XCTestCase {
     
     func testEndpointLogin() {
         let exp = expectation(description: "login succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .loginEndpoint(email: "test@gmail.com", password: "password")) { (result) in
+        EugeneAPI.contactAPIFor(endPoint: .loginEndpoint(email: "jon@gmail.com", password: "password")) { (result) in
             if case .success = result {
                 exp.fulfill()
             }
@@ -108,7 +108,8 @@ class EugeneTests: XCTestCase {
     }
     
     func testEndpointRegister() {
-        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: nil, sharePicture: false, ID: 8675309)
+        let randomNumber = arc4random_uniform(1000000000)
+        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: nil, sharePicture: false, ID: nil, position: "Instructor", email: "test\(randomNumber)@gmail.com")
         let exp = expectation(description: "register succeeded")
         EugeneAPI.contactAPIFor(endPoint: .registerAccountEndpoint(user: person, password: "password")) { (result) in
             if case .success = result {
@@ -153,7 +154,7 @@ class EugeneTests: XCTestCase {
         let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
 
         let exp = expectation(description: "request responded to successfully")
-        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myID: person.ID, sourcePersonID: person2.ID, state: .rejected)) { (result) in
+        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myID: person.ID!, sourcePersonID: person2.ID!, state: .rejected)) { (result) in
             if case .success = result {
                 exp.fulfill()
             }
@@ -166,7 +167,7 @@ class EugeneTests: XCTestCase {
         let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
         
         let exp = expectation(description: "request sent successfully")
-        EugeneAPI.contactAPIFor(endPoint: .sendRequestEndpoint(myID: person.ID, personID: person2.ID)) { (result) in
+        EugeneAPI.contactAPIFor(endPoint: .sendRequestEndpoint(myID: person.ID!, personID: person2.ID!)) { (result) in
             if case .success = result {
                 exp.fulfill()
             }
@@ -177,7 +178,7 @@ class EugeneTests: XCTestCase {
     func testEndpointPrivacy() {
         let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
         let exp = expectation(description: "privacy change succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .privacyEndpoint(myID: person.ID, sharePicture: true)) { (result) in
+        EugeneAPI.contactAPIFor(endPoint: .privacyEndpoint(myID: person.ID!, sharePicture: true)) { (result) in
             if case .success = result {
                 exp.fulfill()
             }
