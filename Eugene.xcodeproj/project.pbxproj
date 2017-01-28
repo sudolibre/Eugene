@@ -8,13 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		E82E22201E3A89A900C81060 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E221F1E3A89A900C81060 /* AppDelegate.swift */; };
-		E82E22221E3A89A900C81060 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22211E3A89A900C81060 /* FirstViewController.swift */; };
+		E82E22221E3A89A900C81060 /* EventListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22211E3A89A900C81060 /* EventListViewController.swift */; };
 		E82E22241E3A89A900C81060 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22231E3A89A900C81060 /* SecondViewController.swift */; };
 		E82E22271E3A89A900C81060 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E82E22251E3A89A900C81060 /* Main.storyboard */; };
 		E82E22291E3A89A900C81060 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E82E22281E3A89A900C81060 /* Assets.xcassets */; };
 		E82E222C1E3A89A900C81060 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E82E222A1E3A89A900C81060 /* LaunchScreen.storyboard */; };
 		E82E22371E3A89A900C81060 /* EugeneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22361E3A89A900C81060 /* EugeneTests.swift */; };
 		E82E22421E3A89A900C81060 /* EugeneUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22411E3A89A900C81060 /* EugeneUITests.swift */; };
+		E82E22531E3A8BA100C81060 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E224F1E3A8BA100C81060 /* Person.swift */; };
+		E82E22541E3A8BA100C81060 /* EugeneAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22501E3A8BA100C81060 /* EugeneAPI.swift */; };
+		E82E22551E3A8BA100C81060 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22511E3A8BA100C81060 /* Request.swift */; };
+		E82E22561E3A8BA100C81060 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22521E3A8BA100C81060 /* Event.swift */; };
+		E82E22581E3A93DC00C81060 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22571E3A93DC00C81060 /* LoginViewController.swift */; };
+		E82E225A1E3AA20700C81060 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22591E3AA20700C81060 /* RegisterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +43,7 @@
 /* Begin PBXFileReference section */
 		E82E221C1E3A89A900C81060 /* Eugene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eugene.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E82E221F1E3A89A900C81060 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E82E22211E3A89A900C81060 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		E82E22211E3A89A900C81060 /* EventListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListViewController.swift; sourceTree = "<group>"; };
 		E82E22231E3A89A900C81060 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		E82E22261E3A89A900C81060 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E82E22281E3A89A900C81060 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +55,12 @@
 		E82E223D1E3A89A900C81060 /* EugeneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EugeneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E82E22411E3A89A900C81060 /* EugeneUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EugeneUITests.swift; sourceTree = "<group>"; };
 		E82E22431E3A89A900C81060 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E82E224F1E3A8BA100C81060 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		E82E22501E3A8BA100C81060 /* EugeneAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EugeneAPI.swift; sourceTree = "<group>"; };
+		E82E22511E3A8BA100C81060 /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
+		E82E22521E3A8BA100C81060 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		E82E22571E3A93DC00C81060 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		E82E22591E3AA20700C81060 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +112,13 @@
 			isa = PBXGroup;
 			children = (
 				E82E221F1E3A89A900C81060 /* AppDelegate.swift */,
-				E82E22211E3A89A900C81060 /* FirstViewController.swift */,
+				E82E22211E3A89A900C81060 /* EventListViewController.swift */,
+				E82E224F1E3A8BA100C81060 /* Person.swift */,
+				E82E22571E3A93DC00C81060 /* LoginViewController.swift */,
+				E82E22591E3AA20700C81060 /* RegisterViewController.swift */,
+				E82E22501E3A8BA100C81060 /* EugeneAPI.swift */,
+				E82E22511E3A8BA100C81060 /* Request.swift */,
+				E82E22521E3A8BA100C81060 /* Event.swift */,
 				E82E22231E3A89A900C81060 /* SecondViewController.swift */,
 				E82E22251E3A89A900C81060 /* Main.storyboard */,
 				E82E22281E3A89A900C81060 /* Assets.xcassets */,
@@ -196,6 +214,7 @@
 				TargetAttributes = {
 					E82E221B1E3A89A900C81060 = {
 						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = CS59J7397A;
 						ProvisioningStyle = Automatic;
 					};
 					E82E22311E3A89A900C81060 = {
@@ -262,9 +281,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82E225A1E3AA20700C81060 /* RegisterViewController.swift in Sources */,
 				E82E22241E3A89A900C81060 /* SecondViewController.swift in Sources */,
+				E82E22551E3A8BA100C81060 /* Request.swift in Sources */,
+				E82E22541E3A8BA100C81060 /* EugeneAPI.swift in Sources */,
 				E82E22201E3A89A900C81060 /* AppDelegate.swift in Sources */,
-				E82E22221E3A89A900C81060 /* FirstViewController.swift in Sources */,
+				E82E22581E3A93DC00C81060 /* LoginViewController.swift in Sources */,
+				E82E22531E3A8BA100C81060 /* Person.swift in Sources */,
+				E82E22561E3A8BA100C81060 /* Event.swift in Sources */,
+				E82E22221E3A89A900C81060 /* EventListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +439,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = CS59J7397A;
 				INFOPLIST_FILE = Eugene/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = dayj.Eugene;
@@ -426,6 +452,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = CS59J7397A;
 				INFOPLIST_FILE = Eugene/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = dayj.Eugene;
