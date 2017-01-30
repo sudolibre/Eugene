@@ -8,13 +8,28 @@
 
 import UIKit
 
-class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate {
+class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+ 
+    @IBOutlet var userImageButton: UIButton!
     @IBOutlet var firstNameTextField: UITextField!
     @IBOutlet var lastNameTextField: UITextField!
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var companyTextField: UITextField!
     @IBOutlet var positionTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
+    var userImage: UIImage?
+    var sharePicture = false
+    
+    @IBAction func imageButtonTapped(_ sender: UIButton) {
+        let imageVC = UIImagePickerController()
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imageVC.sourceType = .camera
+        } else {
+        imageVC.sourceType = .photoLibrary
+        }
+        imageVC.delegate = self
+        present(imageVC, animated: true)
+    }
 
     @IBAction func registerTapped(_ sender: UIButton) {
         //TOOD: figure how to do guard with less repetition
@@ -38,7 +53,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
                 return
         }
         
-        let user = Person(givenName: firstName, familyName: lastName, company: company, picture: nil, sharePicture: true, position: position, email: email)
+        let user = Person(givenName: firstName, familyName: lastName, company: company, picture: userImage, sharePicture: sharePicture, position: position, email: email)
         //TODO: remove code duplicatin with the network failure and system error cases
         register(user, withPassword: password) { (result) in
             switch result {
@@ -74,6 +89,26 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
     
     func register(_ user: Person, withPassword password: String, completion: @escaping (RequestResult) -> ()) {
         EugeneAPI.contactAPIFor(endPoint: .registerAccountEndpoint(user: user, password: password), completion: completion)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        DispatchQueue.main.async { [weak self] in
+            if let controller = self {
+            controller.userImageButton.setImage(image, for: .normal)
+            controller.userImageButton.imageView!.layer.cornerRadius = controller.userImageButton.imageView!.bounds.width / 2
+            controller.userImageButton.imageView!.layer.masksToBounds = true
+            controller.view.updateConstraintsIfNeeded()
+            }
+        }
+        userImage = image
+        dismiss(animated: true) { 
+            let ac = UIAlertController(title: "Picture Privacy", message: "Would you like to let attendees you have not connected with see your picture?", preferredStyle: .alert)
+            let noAction = UIAlertAction(title: "No", style: .cancel)
+            let yesAction = UIAlertAction(title: "Yes", style: .default , handler: { [weak self] (action) in
+                self?.sharePicture = true
+            })
+        }
     }
 
     /*

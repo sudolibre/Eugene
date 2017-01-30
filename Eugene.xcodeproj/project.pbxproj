@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		E82E22201E3A89A900C81060 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E221F1E3A89A900C81060 /* AppDelegate.swift */; };
 		E82E22221E3A89A900C81060 /* EventListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22211E3A89A900C81060 /* EventListViewController.swift */; };
-		E82E22241E3A89A900C81060 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22231E3A89A900C81060 /* SecondViewController.swift */; };
+		E82E22241E3A89A900C81060 /* ContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22231E3A89A900C81060 /* ContactListViewController.swift */; };
 		E82E22271E3A89A900C81060 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E82E22251E3A89A900C81060 /* Main.storyboard */; };
 		E82E22291E3A89A900C81060 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E82E22281E3A89A900C81060 /* Assets.xcassets */; };
 		E82E222C1E3A89A900C81060 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E82E222A1E3A89A900C81060 /* LaunchScreen.storyboard */; };
@@ -21,6 +21,9 @@
 		E82E22561E3A8BA100C81060 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22521E3A8BA100C81060 /* Event.swift */; };
 		E82E22581E3A93DC00C81060 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22571E3A93DC00C81060 /* LoginViewController.swift */; };
 		E82E225A1E3AA20700C81060 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82E22591E3AA20700C81060 /* RegisterViewController.swift */; };
+		E85159E81E3D1A30009D7A0E /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85159E71E3D1A30009D7A0E /* EventDetailViewController.swift */; };
+		E85476941E3D392F0075CF23 /* ContactDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85476931E3D392F0075CF23 /* ContactDetailViewController.swift */; };
+		E85476961E3D48A10075CF23 /* RequestListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85476951E3D48A10075CF23 /* RequestListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +47,7 @@
 		E82E221C1E3A89A900C81060 /* Eugene.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eugene.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E82E221F1E3A89A900C81060 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E82E22211E3A89A900C81060 /* EventListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListViewController.swift; sourceTree = "<group>"; };
-		E82E22231E3A89A900C81060 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		E82E22231E3A89A900C81060 /* ContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewController.swift; sourceTree = "<group>"; };
 		E82E22261E3A89A900C81060 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E82E22281E3A89A900C81060 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E82E222B1E3A89A900C81060 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -61,6 +64,9 @@
 		E82E22521E3A8BA100C81060 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		E82E22571E3A93DC00C81060 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		E82E22591E3AA20700C81060 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		E85159E71E3D1A30009D7A0E /* EventDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
+		E85476931E3D392F0075CF23 /* ContactDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactDetailViewController.swift; sourceTree = "<group>"; };
+		E85476951E3D48A10075CF23 /* RequestListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,14 +118,17 @@
 			isa = PBXGroup;
 			children = (
 				E82E221F1E3A89A900C81060 /* AppDelegate.swift */,
-				E82E22211E3A89A900C81060 /* EventListViewController.swift */,
-				E82E224F1E3A8BA100C81060 /* Person.swift */,
 				E82E22571E3A93DC00C81060 /* LoginViewController.swift */,
 				E82E22591E3AA20700C81060 /* RegisterViewController.swift */,
+				E82E22211E3A89A900C81060 /* EventListViewController.swift */,
+				E85159E71E3D1A30009D7A0E /* EventDetailViewController.swift */,
+				E82E22231E3A89A900C81060 /* ContactListViewController.swift */,
+				E85476931E3D392F0075CF23 /* ContactDetailViewController.swift */,
+				E85476951E3D48A10075CF23 /* RequestListViewController.swift */,
 				E82E22501E3A8BA100C81060 /* EugeneAPI.swift */,
+				E82E224F1E3A8BA100C81060 /* Person.swift */,
 				E82E22511E3A8BA100C81060 /* Request.swift */,
 				E82E22521E3A8BA100C81060 /* Event.swift */,
-				E82E22231E3A89A900C81060 /* SecondViewController.swift */,
 				E82E22251E3A89A900C81060 /* Main.storyboard */,
 				E82E22281E3A89A900C81060 /* Assets.xcassets */,
 				E82E222A1E3A89A900C81060 /* LaunchScreen.storyboard */,
@@ -282,13 +291,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				E82E225A1E3AA20700C81060 /* RegisterViewController.swift in Sources */,
-				E82E22241E3A89A900C81060 /* SecondViewController.swift in Sources */,
+				E82E22241E3A89A900C81060 /* ContactListViewController.swift in Sources */,
 				E82E22551E3A8BA100C81060 /* Request.swift in Sources */,
 				E82E22541E3A8BA100C81060 /* EugeneAPI.swift in Sources */,
 				E82E22201E3A89A900C81060 /* AppDelegate.swift in Sources */,
 				E82E22581E3A93DC00C81060 /* LoginViewController.swift in Sources */,
+				E85159E81E3D1A30009D7A0E /* EventDetailViewController.swift in Sources */,
 				E82E22531E3A8BA100C81060 /* Person.swift in Sources */,
+				E85476941E3D392F0075CF23 /* ContactDetailViewController.swift in Sources */,
 				E82E22561E3A8BA100C81060 /* Event.swift in Sources */,
+				E85476961E3D48A10075CF23 /* RequestListViewController.swift in Sources */,
 				E82E22221E3A89A900C81060 /* EventListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

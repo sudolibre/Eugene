@@ -20,7 +20,8 @@ class Request {
     var jsonRepresentation: [String: Any] {
         let rep: [String: Any] = [
             "person" : person.jsonRepresntation,
-            "state" : state.rawValue
+            "state" : state.rawValue,
+            "date" : date.timeIntervalSince1970
         ]
         
         return rep
@@ -28,16 +29,19 @@ class Request {
     
     var person: Person
     var state: State
+    var date: Date
     
     init(person: Person, state: State) {
         self.person = person
         self.state = state
+        self.date = Date()
     }
     
     init(jsonRep: [String: Any]) {
         let person = Person(jsonRep: jsonRep["person"] as! [String : Any])
         self.person = person
-        
+        let dateInterval = jsonRep["requestTime"] as! TimeInterval
+        self.date = Date(timeIntervalSince1970: dateInterval)
         let stateString = jsonRep["state"] as! String
         self.state =  {
             switch stateString {

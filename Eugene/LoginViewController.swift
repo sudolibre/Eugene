@@ -28,9 +28,9 @@ class LoginViewController: UIViewController {
         
         EugeneAPI.contactAPIFor(endPoint: .loginEndpoint(email: email, password: password)) { [weak self] (result) in
             switch result {
-            case .success:
+            case .success(let userDictionary):
                 DispatchQueue.main.async {
-                    self?.performSegue(withIdentifier: "eventList", sender: nil)
+                    self?.performSegue(withIdentifier: "eventList", sender: userDictionary["ID"])
                 }
             case .networkFailure(let response):
                 if response.statusCode == 401 {
@@ -71,6 +71,7 @@ class LoginViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navVC = segue.destination as? UITabBarController
+        let currentUserID = sender as? Int
         
         switch segue.identifier! {
         case "eventList":
@@ -78,6 +79,7 @@ class LoginViewController: UIViewController {
                 fatalError("Unexpected view controller after login")
             }
             eventListVC.dataSource = EventListDataSource()
+            eventListVC.currentUserID = currentUserID!
         default:
             break
         }

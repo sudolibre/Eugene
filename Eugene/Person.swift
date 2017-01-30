@@ -8,6 +8,8 @@
 import UIKit
 import Foundation
 
+//TODO: consider making ID on event and person optional
+
 class Person {
     var name: PersonNameComponents
     var company: String
@@ -45,6 +47,7 @@ class Person {
         self.sharePicture = sharePicture
         self.position = position
         self.email = email
+        self.ID = ID
     }
     
     init(jsonRep: [String: Any]) {

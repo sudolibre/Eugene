@@ -99,7 +99,7 @@ class EugeneTests: XCTestCase {
     
     func testEndpointLogin() {
         let exp = expectation(description: "login succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .loginEndpoint(email: "jon@gmail.com", password: "password")) { (result) in
+        EugeneAPI.contactAPIFor(endPoint: .loginEndpoint(email: "joe@gmail.com", password: "password")) { (result) in
             if case .success = result {
                 exp.fulfill()
             }
@@ -118,71 +118,71 @@ class EugeneTests: XCTestCase {
         }
         waitForExpectations(timeout: 30.0)
     }
-    
-    func testEndpointRequestList() {
-        let exp = expectation(description: "register list retrieved succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .requestListEndpoint(myID: 8675309)) { (result) in
-            if case .success = result {
-                exp.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 30.0)
-    }
-    
-    func testEndpointMyContactsList() {
-        let exp = expectation(description: "contact list retrieval succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .myContactsEndpoint(myID: 8675309)) { (result) in
-            if case .success = result {
-                exp.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 30.0)
-    }
-    
-    func testEndpointEventList() {
-        let exp = expectation(description: "event list retrieved succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .eventListEndpoint) { (result) in
-            if case .success = result {
-                exp.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 30.0)
-    }
-    
-    func testEndpointRequestResponse() {
-        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
-        let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
-
-        let exp = expectation(description: "request responded to successfully")
-        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myID: person.ID!, sourcePersonID: person2.ID!, state: .rejected)) { (result) in
-            if case .success = result {
-                exp.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 30.0)
-    }
-    
-    func testEndpointSendResponse() {
-        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
-        let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
-        
-        let exp = expectation(description: "request sent successfully")
-        EugeneAPI.contactAPIFor(endPoint: .sendRequestEndpoint(myID: person.ID!, personID: person2.ID!)) { (result) in
-            if case .success = result {
-                exp.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 30.0)
-    }
-    
-    func testEndpointPrivacy() {
-        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
-        let exp = expectation(description: "privacy change succeeded")
-        EugeneAPI.contactAPIFor(endPoint: .privacyEndpoint(myID: person.ID!, sharePicture: true)) { (result) in
-            if case .success = result {
-                exp.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 30.0)
-    }
+//    
+//    func testEndpointRequestList() {
+//        let exp = expectation(description: "register list retrieved succeeded")
+//        EugeneAPI.contactAPIFor(endPoint: .requestListEndpoint(myID: 8675309)) { (result) in
+//            if case .success = result {
+//                exp.fulfill()
+//            }
+//        }
+//        waitForExpectations(timeout: 30.0)
+//    }
+//    
+//    func testEndpointMyContactsList() {
+//        let exp = expectation(description: "contact list retrieval succeeded")
+//        EugeneAPI.contactAPIFor(endPoint: .myContactsEndpoint(myID: 8675309)) { (result) in
+//            if case .success = result {
+//                exp.fulfill()
+//            }
+//        }
+//        waitForExpectations(timeout: 30.0)
+//    }
+//    
+//    func testEndpointEventList() {
+//        let exp = expectation(description: "event list retrieved succeeded")
+//        EugeneAPI.contactAPIFor(endPoint: .eventListEndpoint) { (result) in
+//            if case .success = result {
+//                exp.fulfill()
+//            }
+//        }
+//        waitForExpectations(timeout: 30.0)
+//    }
+//    
+//    func testEndpointRequestResponse() {
+//        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
+//        let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
+//
+//        let exp = expectation(description: "request responded to successfully")
+//        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myID: person.ID!, sourcePersonID: person2.ID!, state: .rejected)) { (result) in
+//            if case .success = result {
+//                exp.fulfill()
+//            }
+//        }
+//        waitForExpectations(timeout: 30.0)
+//    }
+//    
+//    func testEndpointSendResponse() {
+//        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
+//        let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
+//        
+//        let exp = expectation(description: "request sent successfully")
+//        EugeneAPI.contactAPIFor(endPoint: .sendRequestEndpoint(myID: person.ID!, personID: person2.ID!)) { (result) in
+//            if case .success = result {
+//                exp.fulfill()
+//            }
+//        }
+//        waitForExpectations(timeout: 30.0)
+//    }
+//    
+//    func testEndpointPrivacy() {
+//        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
+//        let exp = expectation(description: "privacy change succeeded")
+//        EugeneAPI.contactAPIFor(endPoint: .privacyEndpoint(myID: person.ID!, sharePicture: true)) { (result) in
+//            if case .success = result {
+//                exp.fulfill()
+//            }
+//        }
+//        waitForExpectations(timeout: 30.0)
+//    }
 }
