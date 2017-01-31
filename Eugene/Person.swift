@@ -14,7 +14,7 @@ class Person {
     var name: PersonNameComponents
     var company: String
     var picture: UIImage?
-    var sharePicture: Bool
+    var sharePicture: Bool?
     var position: String?
     var email: String?
     var ID: Int?
@@ -24,9 +24,13 @@ class Person {
             "firstName" : name.givenName!,
             "lastName" : name.familyName!,
             "company": company,
-            //"picture" : UIImagePNGRepresentation(picture)!.base64EncodedString() ,
-            "sharePicture": sharePicture,
+            "photoVisible": sharePicture,
         ]
+        
+        if let _picture = picture {
+            rep["imageString"] = "placeholder picture string" //UIImagePNGRepresentation(_picture)!.base64EncodedString()
+        }
+
         if let _position = position{
             rep["position"] = _position
         }
@@ -43,7 +47,7 @@ class Person {
         name.givenName = givenName
         self.name = name
         self.company = company
-        //self.picture = picture
+        self.picture = picture
         self.sharePicture = sharePicture
         self.position = position
         self.email = email
@@ -52,16 +56,20 @@ class Person {
     
     init(jsonRep: [String: Any]) {
         var name = PersonNameComponents()
-        name.givenName = (jsonRep["givenName"] as! String)
-        name.familyName = (jsonRep["familyName"] as! String)
+        name.givenName = (jsonRep["firstName"] as! String)
+        name.familyName = (jsonRep["lastName"] as! String)
         self.name = name
         self.company = jsonRep["company"] as! String
         if let ID = jsonRep["ID"] as? Int {
             self.ID = ID
         }
-        //let pictureData = Data.init(base64Encoded: jsonRep["picture"] as! String, options: .ignoreUnknownCharacters)!
-        //picture = UIImage(data: pictureData)!
-        self.sharePicture = jsonRep["sharePicture"] as! Bool
+        if let pictureString = jsonRep["imageString"] as? String,
+            let pictureData = Data.init(base64Encoded: pictureString, options: .ignoreUnknownCharacters) {
+            picture = UIImage(data: pictureData)
+        }
+        if let photoVisible = jsonRep["photoVisible"] as? Bool {
+            self.sharePicture = photoVisible
+        }
         if let position = jsonRep["position"] as? String {
             self.position = position
         }

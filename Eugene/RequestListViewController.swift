@@ -13,26 +13,14 @@ class RequestListViewController: UITableViewController {
     @IBOutlet var segmentedControl: UISegmentedControl!
     
     var dataSource: RequestListDataSource!
-    var currentUserID: Int!
+    var currentUserEmail: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        currentUserID = 66
         
-        
-        //TODO: REMOVE AFTER IMPLEMENTATION
-        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
-        let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
-        let person3 = Person(givenName: "Adrian", familyName: "McDaniel", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 10203040)
-
-
-        let incoming = [Request(person: person, state: .expired), Request(person: person2, state: .accepted), Request(person: person3, state: .pending)]
-        let outgoing = [Request(person: person3, state: .accepted), Request(person: person, state: .expired), Request(person: person2, state: .pending)]
-        self.dataSource = RequestListDataSource(forUserID: currentUserID, incomingRequests: incoming, outgoingRequests: outgoing)
         tableView.dataSource = dataSource
 
-        // REMOVE ME ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         
         segmentedControl.addTarget(self, action: #selector(switchTableViews(_:)), for: .valueChanged)
@@ -66,14 +54,9 @@ class RequestListViewController: UITableViewController {
         let contactDetailVC = segue.destination as! ContactDetailViewController
         let selectedRequest = dataSource.requestAt(index: tableView.indexPathForSelectedRow!.row)
         contactDetailVC.contact = selectedRequest.person
-        switch dataSource.activeList {
-        case .incoming:
-            contactDetailVC.contactRequestedConnection = true
-        case .outgoing:
-            contactDetailVC.contactRequestExpired = selectedRequest.state == .expired
-        }
+        contactDetailVC.request = selectedRequest
+        contactDetailVC.direction = dataSource.activeList
     }
-
 
 }
 
@@ -82,12 +65,7 @@ class RequestListDataSource: NSObject, UITableViewDataSource {
     var outgoingRequests: [Request]
     var activeList: ListChoice = .incoming
     let reuseIdentifier = "requestCell"
-    var currentUserID: Int
-    
-    enum ListChoice {
-        case incoming
-        case outgoing
-    }
+    var currentUserEmail: String
     
     internal func requestAt(index: Int) -> Request {
         switch activeList {
@@ -98,20 +76,34 @@ class RequestListDataSource: NSObject, UITableViewDataSource {
         }
     }
     
+//    (result) in
+//    switch result {
+//    case .success(let data):
+//    let incomingRequestsDictionaries = data["incoming"] as! [[String: Any]]
+//    let outgoingRequestsDictionaries = data["outgoing"] as! [[String: Any]]
+//    self.incomingRequests = incomingRequestsDictionaries.map({Request(jsonRep: $0)}).sorted(by: {$0.1.date > $0.0.date})
+//    self.outgoingRequests = outgoingRequestsDictionaries.map({Request(jsonRep: $0)}).sorted(by: {$0.1.date > $0.0.date})
+//    case .networkFailure(let response):
+//    fatalError(response.description)
+//    case .systemFailure(let error):
+//    fatalError(error.localizedDescription)
+//    }
+
+    
     internal func fetchlist() {
-        EugeneAPI.contactAPIFor(endPoint: .requestListEndpoint(myID: currentUserID)) { (result) in
-            switch result {
-            case .success(let data):
-                let incomingRequestsDictionaries = data["incoming"] as! [[String: Any]]
-                let outgoingRequestsDictionaries = data["outgoing"] as! [[String: Any]]
-                self.incomingRequests = incomingRequestsDictionaries.map({Request(jsonRep: $0)}).sorted(by: {$0.1.date > $0.0.date})
-                self.outgoingRequests = outgoingRequestsDictionaries.map({Request(jsonRep: $0)}).sorted(by: {$0.1.date > $0.0.date})
-            case .networkFailure(let response):
-                fatalError(response.description)
-            case .systemFailure(let error):
-                fatalError(error.localizedDescription)
-            }
+    EugeneAPI.contactAPIFor(endPoint: .incomingRequestListEndpoint(myEmail: currentUserEmail)) { (result) in
+        switch result {
+        case let .success(data):
+            let dictionary = data as! [[String: Any]]
+            let requests = dictionary.map({Request(jsonRep: $0)})
+            self.incomingRequests = requests
+        case .networkFailure(let response):
+            fatalError(response.description)
+        case .systemFailure(let error):
+            fatalError(error.localizedDescription)
         }
+        }
+
     }
     
     
@@ -134,22 +126,23 @@ class RequestListDataSource: NSObject, UITableViewDataSource {
         var fontColor = UIColor.black
         var accessoryType: UITableViewCellAccessoryType = .disclosureIndicator
 
-        switch request.state {
-        case .accepted:
-            accessoryType = .checkmark
-        case .pending:
-            break
-        case .expired:
-            fontColor = UIColor.lightGray
-        case .rejected:
-            fatalError("rejected requests should not appear in the table")
+        if request.state == .friends {
+        accessoryType = .checkmark
         }
         
+        if request.stale == true {
+          fontColor = UIColor.lightGray
+        }
+
         cell.accessoryType = accessoryType
         cell.detailTextLabel!.textColor = fontColor
         cell.textLabel!.textColor = fontColor
         cell.textLabel!.text = PersonNameComponentsFormatter.localizedString(from: request.person.name, style: .default, options: [])
-        cell.detailTextLabel!.text = dateFormatter.string(from: request.date)
+        if let refreshDate = request.refreshRequestDate {
+        cell.detailTextLabel!.text = dateFormatter.string(from: refreshDate)
+        } else {
+            cell.detailTextLabel!.text = dateFormatter.string(from: request.originalRequestDate)
+        }
         
         return cell
     }
@@ -163,8 +156,8 @@ class RequestListDataSource: NSObject, UITableViewDataSource {
         }
     }
     
-    init(forUserID userID: Int, incomingRequests: [Request]? = nil, outgoingRequests: [Request]? = nil) {
-        self.currentUserID = userID
+    init(forUserID userEmail: String, incomingRequests: [Request]? = nil, outgoingRequests: [Request]? = nil) {
+        self.currentUserEmail = userEmail
         if let irequests = incomingRequests,
             let orequests = outgoingRequests {
             self.incomingRequests = irequests
@@ -178,4 +171,9 @@ class RequestListDataSource: NSObject, UITableViewDataSource {
         }
     }
     
+}
+
+enum ListChoice {
+    case incoming
+    case outgoing
 }

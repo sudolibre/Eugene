@@ -10,59 +10,73 @@ import Foundation
 
 class Request {
     
-    enum State: String {
-        case accepted = "accepted",
-        rejected = "rejected",
-        expired = "expired",
-        pending = "pending"
-    }
-    
-    var jsonRepresentation: [String: Any] {
-        let rep: [String: Any] = [
-            "person" : person.jsonRepresntation,
-            "state" : state.rawValue,
-            "date" : date.timeIntervalSince1970
-        ]
-        
-        return rep
-    }
-    
-    var person: Person
+    var ID: Int
+    var requesterEmail: String
+    var requesteeEmail: String
     var state: State
-    var date: Date
+    var recentRequestTime: Date
     
-    init(person: Person, state: State) {
-        self.person = person
-        self.state = state
-        self.date = Date()
+    enum State: String {
+        case friends = "FRIENDS",
+        rejected = "REJECTED",
+        requested = "REQUESTED",
+        blocked = "BLOCKED"
     }
+    
+    func returnDirection(currentUserEmail: String) -> ListChoice? {
+        switch currentUserEmail {
+        case requesteeEmail:
+            return .incoming
+        case requesterEmail:
+            return .outgoing
+        default:
+            return nil
+        }
+    }
+    
+//    var jsonRepresentation: [String: Any] {
+//        var rep: [String: Any] = [
+//            "person" : person.jsonRepresntation,
+//            "status" : state.rawValue,
+//            "originalRequestTime" : originalRequestDate.timeIntervalSince1970,
+//            "stale": stale,
+//            "id" : ID
+//        ]
+//        
+//        if let _refreshRequestDate = refreshRequestDate {
+//            rep["refreshRequestTime"] = _refreshRequestDate.timeIntervalSince1970
+//        }
+//        
+//        
+//        return rep
+//    }
+    
+   
+    
+    
+//    init(person: Person, state: State) {
+//        self.person = person
+//        self.state = state
+//        self.originalRequestDate = Date()
+//        self.refreshRequestDate = Date()
+//        ID = 99
+//        stale = false
+//    }
     
     init(jsonRep: [String: Any]) {
-        let person = Person(jsonRep: jsonRep["person"] as! [String : Any])
-        self.person = person
-        let dateInterval = jsonRep["requestTime"] as! TimeInterval
-        self.date = Date(timeIntervalSince1970: dateInterval)
-        let stateString = jsonRep["state"] as! String
-        self.state =  {
-            switch stateString {
-                case "accepted":
-                return .accepted
-                case "rejected":
-                return .rejected
-                case "expired":
-                return .expired
-                case "pending":
-                return .pending
-            default:
-                fatalError("unexpected string \"\(stateString)\" for the state of a request")
-            }
-        }()
+        let recentRequestTimeInterval = jsonRep["recentRequestTime"] as! TimeInterval
+        self.recentRequestTime = Date(timeIntervalSince1970: recentRequestTimeInterval)
+        let stateString = jsonRep["status"] as! String
+        self.state = State(rawValue: stateString)!
+        self.ID = jsonRep["id"] as! Int
+        self.requesteeEmail = jsonRep["requesteeEmail"] as! String
+        self.requesterEmail = jsonRep["requesterEmail"] as! String
     }
 }
 
 extension Request: Equatable {
     static func ==(_ lhs: Request, _ rhs: Request) -> Bool {
-        return lhs.person == rhs.person && lhs.state == rhs.state
+        return lhs.requesterEmail == rhs.requesterEmail && lhs.requesteeEmail == rhs.requesteeEmail
     }
     
 }

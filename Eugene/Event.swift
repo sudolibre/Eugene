@@ -13,7 +13,7 @@ class Event {
     var date: Date
     var location: String
     var address: String
-    var people: [Person]
+    //var people: [Person]
     var ID: Int?
     
     var jsonRepresentation: [String: Any] {
@@ -24,8 +24,8 @@ class Event {
         ]
         let jsonDate = date.timeIntervalSince1970
         rep["date"] = jsonDate
-        let jsonPeople = people.map({$0.jsonRepresntation})
-        rep["people"] = jsonPeople
+        //let jsonPeople = people.map({$0.jsonRepresntation})
+        //rep["people"] = jsonPeople
         if let id = ID {
             rep["ID"] = id
         }
@@ -33,24 +33,22 @@ class Event {
         return rep
     }
     
-    init(name: String, date: Date, location: String, address: String, people: [Person], ID: Int? = nil) {
+    init(name: String, date: Date, location: String, address: String, ID: Int? = nil) {
         self.name = name
         self.date = date
         self.location = location
         self.address = address
-        self.people = people
+        //self.people = people
         self.ID = ID
     }
     
     init(jsonRep: [String: Any]) {
-        self.name = jsonRep["name"] as! String
+        self.name = jsonRep["eventName"] as! String
         self.location = jsonRep["location"] as! String
         self.address = jsonRep["address"] as! String
-        let date = Date(timeIntervalSince1970: jsonRep["eventTime"] as! TimeInterval)
+        let date = Date(timeIntervalSince1970: jsonRep["startTime"] as! TimeInterval)
         self.date = date
-        let jsonPeople = jsonRep["people"] as! [[String: Any]]
-        let people = jsonPeople.map({Person(jsonRep: $0)})
-        self.people = people
-        self.ID = (jsonRep["ID"] as! Int)
+        self.ID = (jsonRep["id"] as! Int)
+
     }
 }

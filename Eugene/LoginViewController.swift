@@ -28,9 +28,20 @@ class LoginViewController: UIViewController {
         
         EugeneAPI.contactAPIFor(endPoint: .loginEndpoint(email: email, password: password)) { [weak self] (result) in
             switch result {
-            case .success(let userDictionary):
+            case .success(let data):
+                let loginSuccess = data as! [String: Bool]
+                if loginSuccess["success"] == true {
                 DispatchQueue.main.async {
-                    self?.performSegue(withIdentifier: "eventList", sender: userDictionary["ID"])
+                    self?.performSegue(withIdentifier: "eventList", sender: email)
+                }
+                } else {
+                    let ac = UIAlertController(title: "Login Failed", message: "Email address or password is incorrect. Please try again or register a new account.", preferredStyle: .alert)
+                    let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel)
+                    ac.addAction(dismissAction)
+                    DispatchQueue.main.async {
+                        self?.present(ac, animated: true)
+                        
+                    }
                 }
             case .networkFailure(let response):
                 if response.statusCode == 401 {
@@ -70,16 +81,17 @@ class LoginViewController: UIViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let navVC = segue.destination as? UITabBarController
-        let currentUserID = sender as? Int
+        let tabVC = segue.destination as? UITabBarController
+        let navVC = tabVC?.viewControllers?.first as? UINavigationController
+        let currentUserEmail = sender as? String
         
         switch segue.identifier! {
         case "eventList":
-            guard let eventListVC = navVC?.viewControllers?.first as? EventListViewController else {
+            guard let eventListVC = navVC?.viewControllers.first as? EventListViewController else {
                 fatalError("Unexpected view controller after login")
             }
             eventListVC.dataSource = EventListDataSource()
-            eventListVC.currentUserID = currentUserID!
+            eventListVC.currentUserEmail = currentUserEmail
         default:
             break
         }

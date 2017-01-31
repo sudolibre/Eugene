@@ -9,7 +9,7 @@
 import Foundation
 
 enum RequestResult {
-    case success(Dictionary<String, Any>)
+    case success(Any)
     case networkFailure(HTTPURLResponse)
     case systemFailure(Error)
 }
@@ -17,7 +17,7 @@ enum RequestResult {
 
 internal final class EugeneAPI {
     
-    private static let baseURL = "https://eugene-tiy.herokuapp.com"
+    private static let baseURL = "https://paul-tiy-presence.herokuapp.com"
     
     enum RequestType: String {
         case get = "GET", post = "POST"
@@ -25,46 +25,57 @@ internal final class EugeneAPI {
 
     enum Endpoint {
         //GET Endpoints
-        case myContactsEndpoint(myID: Int)
         case eventListEndpoint
-        case requestListEndpoint(myID: Int)
         
         //POST Endpoints
         case loginEndpoint(email: String, password: String)
         case registerAccountEndpoint(user: Person, password: String)
-        case requestResponseEndpoint(myID: Int, sourcePersonID: Int, state: Request.State)
-        case sendRequestEndpoint(myID: Int, personID: Int)
-        case privacyEndpoint(myID: Int, sharePicture: Bool)
-        case checkInEndpoint(myID: Int, eventID: Int)
+        case myContactsEndpoint(myEmail: String)
+        case incomingRequestListEndpoint(myEmail: String)
+        case outgoingRequestListEndpoint(myEmail: String)
+        case getContactInfoEndpoint(userEmail: String)
+        case eventAttendees(eventID: Int)
+        case requestResponseEndpoint(myEmail: String, requestID: Int, accept: Bool)
+        case sendRequestEndpoint(myEmail: String, personEmail: String)
+        case privacyEndpoint(myEmail: String)
+        case checkInEndpoint(myEmail: String, eventID: Int)
         
         var description: String {
             switch self {
             case .myContactsEndpoint:
-                return "/mycontacts"
+                return "/get-user-contacts.json"
             case .eventListEndpoint:
-                return "/eventlist"
-            case .requestListEndpoint:
-                return "/requestlist"
+                return "/get-open-events.json"
+            case .eventAttendees:
+                return "/get-event-attendees.json"
+            case .incomingRequestListEndpoint:
+                return "/user-incoming-requests.json"
+            case .outgoingRequestListEndpoint:
+                return "/user-outgoing-requests.json"
+            case .getContactInfoEndpoint:
+                return "/get-user-info.json"
             case .loginEndpoint:
-                return "/login"
+                return "/user-login.json"
             case .registerAccountEndpoint:
-                return "/registeraccount"
+                return "/user-registration.json"
             case .requestResponseEndpoint:
-                return "/requestresponse"
+                return "/respond-to-request.json"
             case .sendRequestEndpoint:
-                return "/sendrequest"
+                return "/send-request.json"
             case .privacyEndpoint:
-                return "/privacy"
+                return "/toggle-photo-visible.json"
             case .checkInEndpoint:
-                return "/checkin"
+                return "/user-event-signup.json"
+            case .getContactInfoEndpoint:
+                return "/get-user-info.json"
             }
         }
         
         var requestType: RequestType {
             switch self {
-            case .myContactsEndpoint, .eventListEndpoint, .requestListEndpoint:
+            case .eventListEndpoint:
                 return .get
-            case .loginEndpoint, .registerAccountEndpoint, .requestResponseEndpoint, .sendRequestEndpoint, .privacyEndpoint, .checkInEndpoint:
+            case .myContactsEndpoint, .outgoingRequestListEndpoint, .incomingRequestListEndpoint, .loginEndpoint, .registerAccountEndpoint, .requestResponseEndpoint, .sendRequestEndpoint, .privacyEndpoint, .checkInEndpoint, .getContactInfoEndpoint, .eventAttendees:
                 return .post
             }
         }
@@ -83,37 +94,46 @@ internal final class EugeneAPI {
     internal static func contactAPIFor(endPoint: Endpoint, completion: @escaping (RequestResult) -> ()) {
         let url = urlFor(endPoint)
         let requestType = endPoint.requestType
-        let jsonData: [String: Any]!
+        let jsonData: [String: Any]?
+        
         
         switch endPoint {
-        case let .myContactsEndpoint(myID):
-            jsonData = ["myID" : myID]
+        case let .myContactsEndpoint(myEmail):
+            jsonData = ["email" : myEmail]
         case .eventListEndpoint:
-            jsonData = [:]
-        case let .requestListEndpoint(myID):
-            jsonData = ["myID" : myID]
+            jsonData = nil
+        case let .eventAttendees(eventID):
+            jsonData = ["eventID": eventID]
+        case let .incomingRequestListEndpoint(myEmail):
+            jsonData = ["email" : myEmail]
+        case let .outgoingRequestListEndpoint(myEmail):
+            jsonData = ["email" : myEmail]
         case let .loginEndpoint(email, password):
             jsonData = ["email": email, "password" : password]
         case let .registerAccountEndpoint(user, password):
             jsonData = user.jsonRepresntation
-            jsonData["password"] = password
-        case let .requestResponseEndpoint(myID, sourcePersonID, state):
-            jsonData = ["myID": myID, "sourcePersonID": sourcePersonID, "state": state.rawValue]
-        case let .sendRequestEndpoint(myID, personID):
-            jsonData = ["myID": myID, "personID" : personID]
-        case let .privacyEndpoint(myID, sharePicture):
-            jsonData = ["myID": myID, "sharePicture": sharePicture]
-        case let .checkInEndpoint(myID, eventID):
-            jsonData = ["myID": myID, "eventID": eventID]
+            jsonData!["password"] = password
+        case let .requestResponseEndpoint(myEmail, requestID, state):
+            jsonData = ["email": myEmail, "requestID": requestID, "accept": state]
+        case let .sendRequestEndpoint(myEmail, personEmail):
+            jsonData = ["requesterEmail": myEmail, "requesteeEmail" : personEmail]
+        case .privacyEndpoint:
+            jsonData = nil
+        case let .checkInEndpoint(myEmail, eventID):
+            jsonData = ["email": myEmail, "eventID": eventID]
+        case let .getContactInfoEndpoint(userEmail):
+            jsonData = ["email": userEmail]
         }
         
         //TODO: Move the request to a separate function
         var request = URLRequest(url: url)
-        let json = try! JSONSerialization.data(withJSONObject: jsonData, options: [])
+        if let _jsonData = jsonData {
+            let json = try! JSONSerialization.data(withJSONObject: _jsonData, options: [])
+            request.httpBody = json
+        }
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
         request.httpMethod = requestType.rawValue
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        request.httpBody = json
         print(jsonData)
 
         let task = session.dataTask(with: request) { (optionalData, optionalResponse, optionalError) in
@@ -127,14 +147,13 @@ internal final class EugeneAPI {
             switch httpResponse.statusCode {
             case 200..<300:
                 if let data = optionalData {
-                    let objectFromData = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                    let objectFromData = try! JSONSerialization.jsonObject(with: data, options: [])
                     completion(.success(objectFromData))
                 }
             default:
                 completion(.networkFailure(httpResponse))
             }
         }
-        
         task.resume()
 
     }

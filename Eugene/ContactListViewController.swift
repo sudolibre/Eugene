@@ -39,15 +39,16 @@ class ContactListViewController: UITableViewController {
 class ContactListDataSource: NSObject, UITableViewDataSource {
     var contacts: [Person]
     let reuseIdentifier = "contactCell"
-    var currentUserID: Int
+    var currentUserEmail: String
 
     
     internal func fetchlist() {
-        EugeneAPI.contactAPIFor(endPoint: .myContactsEndpoint(myID: currentUserID)) { (result) in
+        EugeneAPI.contactAPIFor(endPoint: .myContactsEndpoint(myEmail: currentUserEmail)) { (result) in
             switch result {
             case .success(let data):
-                let contactsDictionaries = data.first!.value as! [[String: Any]]
-                self.contacts = contactsDictionaries.map({Person(jsonRep: $0)})
+                let dictionary = data as! [[String: Any]]
+                let contacts = dictionary.map({Person(jsonRep: $0)})
+                self.contacts = contacts
             case .networkFailure(let response):
                 fatalError(response.description)
             case .systemFailure(let error):
@@ -73,8 +74,8 @@ class ContactListDataSource: NSObject, UITableViewDataSource {
         return contacts.count
     }
     
-    init(forUserID userID: Int, contacts: [Person]? = nil) {
-        self.currentUserID = userID
+    init(forUserID userEmail: String, contacts: [Person]? = nil) {
+        self.currentUserEmail = userEmail
         if let unrwappedContacts = contacts {
             self.contacts = unrwappedContacts
             super.init()

@@ -11,9 +11,9 @@ import UIKit
 class ContactDetailViewController: UIViewController {
     
     var contact: Person!
-    var contactRequestedConnection: Bool = false
-    var contactRequestExpired: Bool = false
-    var currentUserID: Int!
+    var request: Request?
+    var currentUserEmail: String!
+    var direction: ListChoice?
     
     @IBOutlet var rejectButton: UIButton!
     @IBOutlet var acceptButton: UIButton!
@@ -24,7 +24,7 @@ class ContactDetailViewController: UIViewController {
     @IBOutlet var requestButton: UIButton!
     
     @IBAction func rejectTapped(_ sender: UIButton) {
-        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myID: currentUserID, sourcePersonID: contact.ID!, state: .rejected)) { [weak self] (result) in
+        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myEmail: currentUserEmail, requestID: request!.ID, accept: false)) { [weak self] (result) in
             switch result {
             case .success:
                 print("reject succeeded")
@@ -43,7 +43,7 @@ class ContactDetailViewController: UIViewController {
     }
     
     @IBAction func acceptTapped(_ sender: UIButton) {
-        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myID: currentUserID, sourcePersonID: contact.ID!, state: .accepted)) { [weak self] (result) in
+        EugeneAPI.contactAPIFor(endPoint: .requestResponseEndpoint(myEmail: currentUserEmail, requestID: request!.ID, accept: true)) { [weak self] (result) in
             switch result {
             case .success:
                 print("accept succeeded")
@@ -62,7 +62,7 @@ class ContactDetailViewController: UIViewController {
     }
     
     @IBAction func requestTapped(_ sender: UIButton) {
-        EugeneAPI.contactAPIFor(endPoint: .sendRequestEndpoint(myID: currentUserID, personID: contact.ID!)) { [weak self] (result) in
+        EugeneAPI.contactAPIFor(endPoint: .sendRequestEndpoint(myEmail: currentUserEmail, personEmail: contact.email!)) { [weak self] (result) in
             switch result {
             case .success:
                 print("request sent!")
@@ -83,31 +83,65 @@ class ContactDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        currentUserID = 44
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        switch (contact.email, contactRequestedConnection, contactRequestExpired) {
-        case (_, _, true):
-            requestButton.setTitle("Resend Request", for: .normal)
-        case (_, true, _):
-            acceptButton.isHidden = false
-            acceptButton.isEnabled = true
-            rejectButton.isHidden = false
-            rejectButton.isEnabled = true
-            fallthrough
-        case (nil, _, _):
-            //requestButton.isHidden = true
-            //requestButton.isEnabled = false
-            emailLabel.text = "🔒"
-            positionLabel.text = "🔒"
-        default:
-            break
-        }
+//        switch (contact.email, request) {
+//        case (_, _, true):
+//            requestButton.setTitle("Resend Request", for: .normal)
+//        case (_, true, _):
+//            acceptButton.isHidden = false
+//            acceptButton.isEnabled = true
+//            rejectButton.isHidden = false
+//            rejectButton.isEnabled = true
+//            fallthrough
+//        case (nil, _, _):
+//            //requestButton.isHidden = true
+//            //requestButton.isEnabled = false
+//            emailLabel.text = "🔒"
+//            positionLabel.text = "🔒"
+//        default:
+//            break
+//        }
         
         nameLabel.text = PersonNameComponentsFormatter.localizedString(from: contact.name, style: .default, options: [])
         companyLabel.text = contact.company
+        
+        EugeneAPI.contactAPIFor(endPoint: .getContactInfoEndpoint(userEmail: contact.email!)) { (result) in
+            switch result {
+            case .success(let data):
+                let dictionary = data as! [String: Any]
+                let incomingRequests = (dictionary["incomingRequests"] as! [[String: Any]]).map({Request(jsonRep: $0)})
+                let outgoingRequests = (dictionary["incomingRequests"] as! [[String: Any]]).map({Request(jsonRep: $0)})
+                
+                if incomingRequests.contains(where: { (request) -> Bool in
+                    if let direction = request.returnDirection(currentUserEmail: self.currentUserEmail) {
+                        return direction == .outgoing
+                    } else {
+                        return false
+                    }
+                })
+                    {
+                    self.direction = .outgoing
+                }
+                if outgoingRequests.contains(where: { (request) -> Bool in
+                    if let direction = request.returnDirection(currentUserEmail: self.currentUserEmail) {
+                        return direction == .incoming
+                    } else {
+                        return false
+                    }
+                })
+                {
+                    self.direction = .incoming
+                }
+            case .networkFailure(let error):
+                fatalError(error.description)
+            case .systemFailure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+        
+
     }
 
     override func didReceiveMemoryWarning() {

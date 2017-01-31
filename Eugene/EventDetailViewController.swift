@@ -11,7 +11,8 @@ import UIKit
 class EventDetailViewController: UIViewController {
     
     var event: Event!
-    var currentUserID: Int!
+    var attendees: [Person]?
+    var currentUserEmail: String!
     
     @IBOutlet var nameLabel : UILabel!
     @IBOutlet var dateLabel : UILabel!
@@ -26,7 +27,7 @@ class EventDetailViewController: UIViewController {
     }
     
     @IBAction func checkInTapped(_ sender: UIButton) {
-        EugeneAPI.contactAPIFor(endPoint: .checkInEndpoint(myID: currentUserID, eventID: event.ID!)) { [weak self] (result) in
+        EugeneAPI.contactAPIFor(endPoint: .checkInEndpoint(myEmail: currentUserEmail, eventID: event.ID!)) { [weak self] (result) in
             switch result {
             case .success:
                 self?.userCheckedIn()
@@ -62,7 +63,8 @@ class EventDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        viewAttendeesButton.adjustsImageWhenDisabled = true
+        viewAttendeesButton.isEnabled = false
         //viewAttendeesButton.isHidden = true
         // Do any additional setup after loading the view.
     }
@@ -73,13 +75,26 @@ class EventDetailViewController: UIViewController {
         nameLabel.text = event.name
         locationLabel.text = event.location
         addressLabel.text = event.address
-        peopleLabel.text = "\(event.people.count) others checked in"
+        peopleLabel.text = "checking for attendees..."
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         let dateDescription = dateFormatter.string(from: event.date)
         dateLabel.text = dateDescription
-
+        
+        EugeneAPI.contactAPIFor(endPoint: .eventAttendees(eventID: event.ID!)) { (result) in
+            switch result {
+            case .success(let data):
+                let attendeeData = data as! [[String: Any]]
+                self.attendees = attendeeData.map({Person(jsonRep: $0)})
+                self.peopleLabel.text = "\(self.attendees!.count) others checked in"
+                self.viewAttendeesButton.isEnabled = true
+            case.networkFailure(let error):
+                fatalError(error.debugDescription)
+            case .systemFailure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
         
     }
 
@@ -94,7 +109,7 @@ class EventDetailViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let contactListVC = segue.destination as! ContactListViewController
-        let dataSource = ContactListDataSource(forUserID: currentUserID, contacts: event.people)
+        let dataSource = ContactListDataSource(forUserID: currentUserEmail, contacts: attendees)
         contactListVC.dataSource = dataSource
     }
 

@@ -59,7 +59,7 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
             switch result {
             case .success:
                 DispatchQueue.main.async {
-                    self.performSegue(withIdentifier: "eventList", sender: nil)
+                    self.performSegue(withIdentifier: "eventList", sender: email)
                 }
             case .networkFailure(let response):
                     let ac = UIAlertController(title: "Login Failed", message: "An unexpected network error occured. Please try again or register a new account. (Code: \(response.statusCode)", preferredStyle: .alert)
@@ -108,17 +108,21 @@ class RegisterViewController: UIViewController, UITextFieldDelegate, UIImagePick
             let yesAction = UIAlertAction(title: "Yes", style: .default , handler: { [weak self] (action) in
                 self?.sharePicture = true
             })
+            ac.addAction(noAction)
+            ac.addAction(yesAction)
+            self.present(ac, animated: true)
         }
     }
 
-    /*
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let eventsVC = segue.destination as! EventListViewController
+        eventsVC.dataSource = EventListDataSource()
+        eventsVC.currentUserEmail = sender as! String
     }
-    */
+ 
 
 }

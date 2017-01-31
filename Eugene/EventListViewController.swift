@@ -11,30 +11,17 @@ import UIKit
 class EventListViewController: UITableViewController {
     
     var dataSource: EventListDataSource!
-    var currentUserID: Int!
+    var currentUserEmail: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-        
-        //TODO: REMOVE ME AFTER Implementation
-        dataSource = EventListDataSource()
-        currentUserID = 99
-        //dataSource.fetchlist()
-        
-        
-        
-        
-        
-        
         tableView.dataSource = dataSource
-        // Do any additional setup after loading the view, typically from a nib.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+        tableView.reloadData()
+        dataSource.fetchlist(tableView)
     }
 
     override func didReceiveMemoryWarning() {
@@ -50,7 +37,7 @@ class EventListViewController: UITableViewController {
         let eventDetailVC = segue.destination as! EventDetailViewController
         //TODO: add subscript to datasource
         eventDetailVC.event = dataSource.events[tableView.indexPathForSelectedRow!.row]
-        eventDetailVC.currentUserID = currentUserID
+        eventDetailVC.currentUserEmail = currentUserEmail
     }
 
 
@@ -59,16 +46,19 @@ class EventListViewController: UITableViewController {
 class EventListDataSource: NSObject, UITableViewDataSource {
     var events: [Event] = []
     
-    internal func fetchlist() {
+    internal func fetchlist(_ tableView: UITableView) {
         EugeneAPI.contactAPIFor(endPoint: .eventListEndpoint) { (result) in
             switch result {
             case .success(let data):
-                let eventsDictionaries = data.first!.value as! [[String: Any]]
-                self.events = eventsDictionaries.map({Event(jsonRep: $0)}).sorted(by: {$0.1.date > $0.0.date })
+                let dictionary = data as! [[String: Any]]
+                let events = dictionary.map({Event(jsonRep: $0)}).sorted(by: {$0.1.date > $0.0.date })
+                print(events)
+                self.events = events
+                tableView.reloadData()
             case .networkFailure(let response):
-                fatalError(response.description)
+                print(response.description)
             case .systemFailure(let error):
-                fatalError(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
     }
@@ -94,11 +84,6 @@ class EventListDataSource: NSObject, UITableViewDataSource {
     
     override init() {
         super.init()
-        //fetchlist()
-        let person = Person(givenName: "TJ", familyName: "Usomething", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: false, ID: 8675309)
-        let person2 = Person(givenName: "Amy", familyName: "Robertson", company: "TIY", picture: UIImage(named: "eugeneSmall")!, sharePicture: true, ID: 90210)
-        let event = Event(name: "Crash course", date: Date(), location: "TIY", address: "MLK Somewhere", people: [person, person2], ID: 5)
-        events = Array(repeating: event , count: 50)
     }
     
     
